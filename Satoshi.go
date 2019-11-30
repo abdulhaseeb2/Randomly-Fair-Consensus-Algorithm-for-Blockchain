@@ -1,4 +1,4 @@
-package IBC_Project
+package assignment02IBC
 
 import (
 	"encoding/gob"
@@ -48,7 +48,6 @@ func SendTrans(trans string, miner string) {
 	conn.Close()
 }
 
-//edit this
 func SelectMiner(nodes int, peersPort []string, port string) string {
 	miner := 0
 	for {
@@ -90,6 +89,7 @@ func gen_Storage(port string, sat_port string) int {
 	_ = dec.Decode(&message)
 
 	conn1.Close()
+	n.Close()
 	println("Random Storage Value Selected: ", message)
 
 	return message
@@ -117,7 +117,7 @@ func uniqueConsensus(nodes int, peersPort []string, port string, sat_port string
 			found := false
 			if port != peersPort[pm] && peersPort[pm] != peersPort[selector] {
 				for j := 0; j < i; j++ {
-					if pm == pot_Miners[j] {
+					if peersPort[pm] == pot_Miners[j] {
 						found = true
 					}
 				}
@@ -126,7 +126,7 @@ func uniqueConsensus(nodes int, peersPort []string, port string, sat_port string
 
 					println("Potential Miner: ", pot_Miners[len(pot_Miners)-1])
 
-					pot_Storage = append(pot_Storage, math.Abs(getStorage(peersPort[pm], sat_port)-randomStorage))
+					pot_Storage = append(pot_Storage, int(math.Abs(float64(getStorage(peersPort[pm], sat_port)-randomStorage))))
 
 					break
 				}
@@ -178,6 +178,7 @@ func getStorage(port string, sat_port string) int {
 	_ = dec.Decode(&message)
 
 	conn1.Close()
+	n.Close()
 	println("Free Storage of Potential Miner: ", message)
 
 	return message

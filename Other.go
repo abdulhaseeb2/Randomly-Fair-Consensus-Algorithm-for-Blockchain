@@ -1,14 +1,17 @@
-package IBC_Project
+package assignment02IBC
 
 import (
 	"bufio"
 	"encoding/gob"
 	"fmt"
 	"log"
+	"math"
+	"math/rand"
 	"net"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func Me(conn net.Conn, port string, name string) {
@@ -27,6 +30,7 @@ func Me(conn net.Conn, port string, name string) {
 
 var TempChain *Block
 var Name string
+var Storage []int
 
 func ListenToPeers(peers []string, port string, host string) {
 
@@ -57,7 +61,7 @@ func ListenToPeers(peers []string, port string, host string) {
 
 			println("Choosen as Miner.")
 
-			go verifyAndBroadcast(trans, peers, true)
+			go VerifyAndBroadcast(trans, peers, true)
 
 			conn.Close()
 
@@ -67,9 +71,68 @@ func ListenToPeers(peers []string, port string, host string) {
 			if err != nil {
 				log.Println(err)
 			}
-			go broadCastMeInTheAir(conn, peers)
+			go BroadCastMeInTheAir(conn, peers)
+		} else if trans == "Selector" {
+			conn.Close()
+			conn, err := net.Dial("tcp", host)
+			if err != nil {
+				log.Println(err)
+			}
+			go GenStorageValue(conn)
+		} else if trans == "Potential Miner" {
+			conn.Close()
+			conn, err := net.Dial("tcp", host)
+			if err != nil {
+				log.Println(err)
+			}
+			go GetFreeStorage(conn)
 		}
 	}
+}
+
+func GenStorageValue(conn net.Conn) {
+
+	println("\nSelector")
+	z := GenValue()
+
+	gobEncoder := gob.NewEncoder(conn)
+	_ = gobEncoder.Encode(&z)
+
+	println("Random Value: ", z)
+	conn.Close()
+}
+
+func GetFreeStorage(conn net.Conn) {
+	println("\nPotential Miner")
+	z := Storage[GenValue()]
+
+	gobEncoder := gob.NewEncoder(conn)
+	_ = gobEncoder.Encode(&z)
+
+	println("Free Storage: ", z)
+	conn.Close()
+}
+
+func GenValue() int {
+
+	rand.Seed(time.Now().UTC().UnixNano())
+	var x int
+	var y int
+	x = RandInt1(1, 499)
+	y = RandInt1(500, 999)
+	x = ((x/y)/(x*y)*(x+y) + (x * y))
+	y = RandInt1(1000, 1500)
+	x = (x + y) % 1000 //change 100 with max nodes here
+	var z float64
+	z = math.Abs(float64(x)) //make a neg value positive
+
+	return int(z)
+}
+
+func RandInt1(min int, max int) int {
+	//this num will be the input number that you will pass from your code
+	num := 23
+	return min + rand.Intn(max-min)*num
 }
 
 func BroadCastMeInTheAir(conn net.Conn, peers []string) {
@@ -103,8 +166,8 @@ func BroadCastMeInTheAir(conn net.Conn, peers []string) {
 		}
 	}
 
-	if blk.HashValue != tempChain.HashValue {
-		verifyAndBroadcast(blk.Transaction, peers, false)
+	if blk.HashValue != TempChain.HashValue {
+		VerifyAndBroadcast(blk.Transaction, peers, false)
 	} else {
 		println("\nDropping blk", blk.HashValue)
 	}
@@ -201,7 +264,7 @@ func SendBroadCast(peers []string, blk Block) {
 
 func VerifyAndBroadcast(trans string, peers []string, bo bool) {
 	split := strings.Split(trans, " ")
-	balance := GetBalance(split[0], tempChain)
+	balance := GetBalance(split[0], TempChain)
 	println("\nAvailable Balance for transacton: ", balance)
 	req, err := strconv.Atoi(split[1])
 	if err != nil {
@@ -210,17 +273,17 @@ func VerifyAndBroadcast(trans string, peers []string, bo bool) {
 	}
 	if req <= balance { //Commit block and broadcast
 		if bo {
-			trans = trans + " \n 50 -> " + name
+			trans = trans + " \n 50 -> " + Name
 		}
-		tempChain = InsertBlock(trans, tempChain)
+		TempChain = InsertBlock(trans, TempChain)
 		//add threads wala function
 		var blk Block
-		blk.HashValue = tempChain.HashValue
-		blk.Transaction = tempChain.Transaction
+		blk.HashValue = TempChain.HashValue
+		blk.Transaction = TempChain.Transaction
 		blk.PreviousBlock = nil
 
 		println("\n")
-		ListBlocks(tempChain)
+		ListBlocks(TempChain)
 		println("\n")
 
 		go SendBroadCast(peers, blk)
