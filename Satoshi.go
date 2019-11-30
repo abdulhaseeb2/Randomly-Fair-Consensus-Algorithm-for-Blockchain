@@ -59,7 +59,7 @@ func SelectMiner(nodes int, peersPort []string, port string) string {
 	return peersPort[miner]
 }
 
-func gen_Storage(port string, sat_port string) int {
+func Gen_Storage(port string, sat_port string) int {
 
 	//Telling the Node that he is the Selector of the random Storage Variable.
 	conn, err := net.Dial("tcp", port)
@@ -95,7 +95,7 @@ func gen_Storage(port string, sat_port string) int {
 	return message
 }
 
-func uniqueConsensus(nodes int, peersPort []string, port string, sat_port string) string {
+func UniqueConsensus(nodes int, peersPort []string, port string, sat_port string) string {
 	//randomly selecting a selector
 	selector := 0
 	for {
@@ -105,7 +105,7 @@ func uniqueConsensus(nodes int, peersPort []string, port string, sat_port string
 		}
 	}
 	//Then Generating a random storage Value by the selector
-	randomStorage := gen_Storage(peersPort[selector], sat_port)
+	randomStorage := Gen_Storage(peersPort[selector], sat_port)
 
 	//randomly selecting a Potential Miner
 	pot_Miners := []string{}
@@ -126,7 +126,7 @@ func uniqueConsensus(nodes int, peersPort []string, port string, sat_port string
 
 					println("Potential Miner: ", pot_Miners[len(pot_Miners)-1])
 
-					pot_Storage = append(pot_Storage, int(math.Abs(float64(getStorage(peersPort[pm], sat_port)-randomStorage))))
+					pot_Storage = append(pot_Storage, int(math.Abs(float64(GetStorage(peersPort[pm], sat_port)-randomStorage))))
 
 					break
 				}
@@ -149,7 +149,7 @@ func uniqueConsensus(nodes int, peersPort []string, port string, sat_port string
 
 }
 
-func getStorage(port string, sat_port string) int {
+func GetStorage(port string, sat_port string) int {
 	//Telling the Node that he is the Potential Miner and that he needs to give me his free storage.
 	conn, err := net.Dial("tcp", port)
 	if err != nil {
