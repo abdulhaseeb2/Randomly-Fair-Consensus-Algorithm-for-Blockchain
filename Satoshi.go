@@ -139,8 +139,8 @@ func uniqueConsensus(nodes int, peersPort []string, port string, sat_port string
 	index := 0
 	for i := 1; i < 3; i++ {
 		if pot_Storage[i] < min {
-			min := pot_Storage[i]
-			index := i
+			min = pot_Storage[i]
+			index = i
 		}
 	}
 	println("Miner Choosen: ", pot_Miners[index])
