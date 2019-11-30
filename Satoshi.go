@@ -1,4 +1,4 @@
-package assignment02IBC
+package IBC_Project
 
 import (
 	"encoding/gob"
