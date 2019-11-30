@@ -143,7 +143,9 @@ func uniqueConsensus(nodes int, peersPort []string, port string, sat_port string
 			index := i
 		}
 	}
-	println("Miner Choosen: ")
+	println("Miner Choosen: ", pot_Miners[index])
+
+	return pot_Miners[index]
 
 }
 
