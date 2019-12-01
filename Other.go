@@ -157,12 +157,13 @@ func BroadCastMeInTheAir(conn net.Conn, peers []string) {
 			break
 		} else {
 			println("\nbad\n")
-			trans := "bad"
+			trans := "ok"
 			gobEncoder := gob.NewEncoder(conn)
 			err := gobEncoder.Encode(&trans)
 			if err != nil {
 				log.Println(err)
 			}
+			break
 		}
 	}
 
