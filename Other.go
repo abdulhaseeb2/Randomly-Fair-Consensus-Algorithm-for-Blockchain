@@ -265,33 +265,35 @@ func SendBroadCast(peers []string, blk Block) {
 }
 
 func VerifyAndBroadcast(trans string, peers []string, bo bool) {
-	split := strings.Split(trans, " ")
-	balance := GetBalance(split[0], TempChain)
-	println("\nAvailable Balance for transacton: ", balance)
-	req, err := strconv.Atoi(split[1])
-	if err != nil {
-		fmt.Println("\nInvalid Required Balance\nProgram Terminating")
-		req = balance + 50
-	}
-	if req <= balance { //Commit block and broadcast
-		if bo {
-			trans = trans + " \n 50 -> " + Name
+	if trans == "" {
+		split := strings.Split(trans, " ")
+		balance := GetBalance(split[0], TempChain)
+		println("\nAvailable Balance for transacton: ", balance)
+		req, err := strconv.Atoi(split[1])
+		if err != nil {
+			fmt.Println("\nInvalid Required Balance\nProgram Terminating")
+			req = balance + 50
 		}
-		println(trans)
-		TempChain = InsertBlock(trans, TempChain)
-		//add threads wala function
-		var blk Block
-		blk.HashValue = TempChain.HashValue
-		blk.Transaction = TempChain.Transaction
-		blk.PreviousBlock = nil
+		if req <= balance { //Commit block and broadcast
+			if bo {
+				trans = trans + " \n 50 -> " + Name
+			}
+			println(trans)
+			TempChain = InsertBlock(trans, TempChain)
+			//add threads wala function
+			var blk Block
+			blk.HashValue = TempChain.HashValue
+			blk.Transaction = TempChain.Transaction
+			blk.PreviousBlock = nil
 
-		println("\n", TempChain.Transaction)
-		ListBlocks(TempChain)
-		println("\n")
+			println("\n", TempChain.Transaction)
+			ListBlocks(TempChain)
+			println("\n")
 
-		go SendBroadCast(peers, blk)
+			go SendBroadCast(peers, blk)
 
-	} else {
-		println("\nInsufficient funds")
+		} else {
+			println("\nInsufficient funds")
+		}
 	}
 }
