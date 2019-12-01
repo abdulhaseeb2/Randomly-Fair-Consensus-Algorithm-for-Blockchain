@@ -21,6 +21,7 @@ func Me(conn net.Conn, port string, name string) {
 		log.Println(err)
 	}
 
+	//println(name)
 	gobEncoder = gob.NewEncoder(conn)
 	err = gobEncoder.Encode(&name)
 	if err != nil {
@@ -162,6 +163,7 @@ func BroadCastMeInTheAir(conn net.Conn, peers []string) {
 			err := gobEncoder.Encode(&trans)
 			if err != nil {
 				log.Println(err)
+				break
 			}
 		}
 	}
