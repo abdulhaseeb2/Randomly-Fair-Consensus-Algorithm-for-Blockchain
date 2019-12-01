@@ -137,7 +137,7 @@ func UniqueConsensus(nodes int, peersPort []string, port string, sat_port string
 	//Selecting the miner on the bases of minimum Storage
 	min := pot_Storage[0]
 	index := 0
-	for i := 1; i < 3; i++ {
+	for i := 1; i < 2; i++ {
 		if pot_Storage[i] < min {
 			min = pot_Storage[i]
 			index = i
