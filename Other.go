@@ -282,7 +282,7 @@ func VerifyAndBroadcast(trans string, peers []string, bo bool) {
 		blk.Transaction = TempChain.Transaction
 		blk.PreviousBlock = nil
 
-		println("\n")
+		println("\n", TempChain.Transaction)
 		ListBlocks(TempChain)
 		println("\n")
 
