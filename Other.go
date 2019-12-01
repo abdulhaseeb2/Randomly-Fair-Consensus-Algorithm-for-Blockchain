@@ -265,7 +265,7 @@ func SendBroadCast(peers []string, blk Block) {
 }
 
 func VerifyAndBroadcast(trans string, peers []string, bo bool) {
-	if trans == "" {
+	if trans != "" {
 		split := strings.Split(trans, " ")
 		balance := GetBalance(split[0], TempChain)
 		println("\nAvailable Balance for transacton: ", balance)
