@@ -110,7 +110,7 @@ func UniqueConsensus(nodes int, peersPort []string, port string, sat_port string
 	//randomly selecting a Potential Miner
 	pot_Miners := []string{}
 	pot_Storage := []int{}
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 2; i++ {
 		pm := 0
 		for {
 			pm = myrandom(nodes)
