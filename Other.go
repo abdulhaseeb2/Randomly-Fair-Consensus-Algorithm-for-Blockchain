@@ -157,13 +157,12 @@ func BroadCastMeInTheAir(conn net.Conn, peers []string) {
 			break
 		} else {
 			println("\nbad\n")
-			trans := "ok"
+			trans := "bad"
 			gobEncoder := gob.NewEncoder(conn)
 			err := gobEncoder.Encode(&trans)
 			if err != nil {
 				log.Println(err)
 			}
-			break
 		}
 	}
 
@@ -276,6 +275,7 @@ func VerifyAndBroadcast(trans string, peers []string, bo bool) {
 		if bo {
 			trans = trans + " \n 50 -> " + Name
 		}
+		println(trans)
 		TempChain = InsertBlock(trans, TempChain)
 		//add threads wala function
 		var blk Block
